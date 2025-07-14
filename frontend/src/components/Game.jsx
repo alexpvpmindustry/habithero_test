@@ -8,7 +8,6 @@ const Game = ({ session }) => {
   const [gameCompleted, setGameCompleted] = useState(false);
 
   useEffect(() => {
-    // Initialize 8 cards (4 pairs)
     const symbols = ['A', 'B', 'C', 'D'];
     const deck = [...symbols, ...symbols].sort(() => Math.random() - 0.5);
     setCards(deck);
@@ -25,7 +24,6 @@ const Game = ({ session }) => {
         setMatched([...matched, first, second]);
         if (matched.length + 2 === cards.length) {
           setGameCompleted(true);
-          // Award tokens
           axios.post(`${import.meta.env.VITE_BACKEND_URL}/complete-task`, { task_type: 'game' }, {
             headers: { Authorization: `Bearer ${session.access_token}` }
           }).then(() => alert('Game completed! Tokens awarded.')).catch(console.error);
@@ -36,20 +34,24 @@ const Game = ({ session }) => {
   };
 
   return (
-    <div>
-      <h1>Memory Game</h1>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 50px)' }}>
+    <div className="max-w-4xl mx-auto mt-10">
+      <h1 className="text-3xl font-bold text-secondary mb-6">Memory Game</h1>
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {cards.map((card, index) => (
           <div
             key={index}
             onClick={() => handleFlip(index)}
-            style={{ height: '50px', border: '1px solid', textAlign: 'center' }}
+            className={`card h-24 flex items-center justify-center text-2xl cursor-pointer transition-transform duration-300 ${
+              flipped.includes(index) || matched.includes(index) ? 'bg-primary text-white' : 'bg-gray-200'
+            } ${flipped.includes(index) || matched.includes(index) ? '' : 'hover:scale-105'}`}
           >
             {(flipped.includes(index) || matched.includes(index)) ? card : '?'}
           </div>
         ))}
       </div>
-      {gameCompleted && <p>Congratulations! Game completed.</p>}
+      {gameCompleted && (
+        <p className="mt-6 text-lg text-center text-secondary font-semibold">Congratulations! Game completed.</p>
+      )}
     </div>
   );
 };

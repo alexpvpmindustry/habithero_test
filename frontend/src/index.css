@@ -1,64 +1,36 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 body {
-  @apply bg-gray-50 text-gray-800 font-sans antialiased;
+  font-family: 'Inter', sans-serif;
+  @apply bg-background text-gray-800 antialiased;
 }
 
 header {
-  @apply bg-white shadow-md fixed top-0 w-full z-50;
+  @apply bg-secondary text-white shadow-md fixed top-0 w-full z-50;
 }
 
 nav {
-  @apply flex justify-between items-center px-6 py-4 lg:px-12;
+  @apply flex justify-between items-center px-4 py-4 lg:px-8;
 }
 
 main {
-  @apply mt-16 px-4 sm:px-8 lg:px-16;
-}
-
-section {
-  @apply my-8;
+  @apply mt-20 px-4 sm:px-6 lg:px-8 min-h-[calc(100vh-12rem)];
 }
 
 button {
-  @apply bg-primary text-white font-semibold py-2 px-4 rounded-lg hover:bg-secondary transition duration-300 shadow-md;
+  @apply bg-primary text-white font-semibold py-2 px-4 rounded-lg hover:bg-teal-600 transition duration-300 shadow-md;
 }
 
-input, textarea {
+input {
   @apply border border-gray-300 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-primary transition duration-300;
 }
 
 footer {
-  @apply bg-gray-100 text-gray-600 py-4 text-center mt-8;
+  @apply bg-secondary text-white py-4 text-center mt-8;
 }
 
 .card {
-  @apply bg-white shadow-lg rounded-lg p-6 mb-6 transition duration-300 hover:shadow-xl;
-}
-
-.grid {
-  @apply grid gap-6 sm:grid-cols-2 lg:grid-cols-3;
-}
-
-@media (min-width: 640px) {
-  nav {
-    @apply px-8 py-6;
-  }
-
-  main {
-    @apply px-12;
-  }
-}
-
-@media (min-width: 1024px) {
-  nav {
-    @apply px-16 py-8;
-  }
-
-  main {
-    @apply px-24;
-  }
+  @apply bg-white shadow-lg rounded-lg p-6 transition duration-300 hover:shadow-xl;
 }
