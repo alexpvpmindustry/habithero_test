@@ -70,52 +70,37 @@ FOR EACH ROW EXECUTE PROCEDURE public.handle_new_user();
 
 ```
 
-### Step 2: Build the Frontend
 
-1. **Set up the frontend project**:
-  ```bash
-  mkdir habithero-frontend
-  cd habithero-frontend
-  npm install
-  ```
+# how to develop this code:
 
-2. **Install dependencies**:
-  ```bash
-  npm install @supabase/supabase-js react-router-dom
-  ```
+#### frontend:
 
-3. **Run the frontend**:
-  ```bash
-  npm run dev
-  ```
+cd to frontend
 
----
+`npm install`
 
-### Step 3: Build the Backend
+`npm install -D tailwindcss@3 postcss autoprefixer`
 
-1. **Set up the backend project**:
-  ```bash
-  mkdir habithero-backend
-  cd habithero-backend
-  npm install
-  ```
+`npx tailwindcss init -p`
 
-2. **Run the backend**:
-  ```bash
-  node src/index.js
-  ```
+`npm run build`
 
----
+`docker build -t habithero-frontend .`
 
-### Step 4: Connect Frontend and Backend
+#### backend
 
-1. **Start both servers**:
-  ```bash
-  # Frontend
-  cd habithero-frontend
-  npm run dev
+cd to backend
 
-  # Backend
-  cd ../habithero-backend
-  node src/index.js
-  ```
+`bun install`
+
+`bun run app.ts` if you want
+
+`docker build -t habithero-backend .`
+
+# running both at the same time
+
+cd to root
+
+`docker-compose up -d`
+
+`docker-compose down` to close it
