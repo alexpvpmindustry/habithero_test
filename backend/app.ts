@@ -1,11 +1,19 @@
-import { createClient } from "@supabase/supabase-js";
-import { load } from "https://deno.land/std@0.224.0/dotenv/load.ts";
+// Import Deno standard library and Node.js-compatible modules
+import { createClient } from "npm:@supabase/supabase-js@^2.51.0";
+import { load } from "https://deno.land/std@0.224.0/dotenv/mod.ts"; // Use mod.ts for full dotenv support
+import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 
+// Load environment variables
 await load({ export: true });
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_KEY")!;
 
+if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
+  throw new Error("Missing Supabase environment variables");
+}
+
+// Initialize Supabase client with Deno-compatible fetch
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY, {
   global: {
     fetch: (...args) => fetch(...args),
@@ -27,8 +35,8 @@ async function awardBadgesAndMilestones(
     .single();
   if (error) return;
 
-  let newBadges = [...profile.badges];
-  let newMilestones = [...profile.milestones];
+  let newBadges = [...(profile.badges || [])];
+  let newMilestones = [...(profile.milestones || [])];
   let updated = false;
 
   // Badges and milestones for tokens
@@ -47,19 +55,27 @@ async function awardBadgesAndMilestones(
   }
 
   if (updated) {
-    await supabase
+    const { error: updateError } = await supabase
       .from("profiles")
       .update({ badges: newBadges, milestones: newMilestones })
       .eq("id", userId);
+    if (updateError) {
+      console.error("Failed to update badges and milestones:", updateError);
+    }
   }
 }
 
-const handler = async (req: Request): Promise<Response> => {
-  const corsHeaders = new Headers({
+// CORS headers helper function
+function getCorsHeaders(): Headers {
+  return new Headers({
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Headers": "Authorization, Content-Type",
     "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
   });
+}
+
+const handler = async (req: Request): Promise<Response> => {
+  const corsHeaders = getCorsHeaders();
 
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -71,7 +87,7 @@ const handler = async (req: Request): Promise<Response> => {
   const contentHeaders = new Headers(corsHeaders);
   contentHeaders.set("Content-Type", "application/json");
 
-  // Middleware-like auth check function
+  // Authentication check
   async function authenticate(): Promise<any | Response> {
     const token = req.headers.get("Authorization")?.replace("Bearer ", "");
     if (!token) {
@@ -79,6 +95,7 @@ const handler = async (req: Request): Promise<Response> => {
     }
     const { data: { user }, error } = await supabase.auth.getUser(token);
     if (error) {
+      console.error("Authentication error:", error);
       return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401, headers: contentHeaders });
     }
     return user;
@@ -232,5 +249,6 @@ const handler = async (req: Request): Promise<Response> => {
   return new Response(JSON.stringify({ error: "Not Found" }), { status: 404, headers: contentHeaders });
 };
 
-Deno.serve({ port: PORT }, handler);
+// Start the server using Deno.serve
+serve(handler, { port: PORT });
 console.log(`Server running on port ${PORT}`);
