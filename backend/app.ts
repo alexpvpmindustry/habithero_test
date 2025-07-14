@@ -186,26 +186,28 @@ const handler = async (req: Request): Promise<Response> => {
       return new Response(JSON.stringify({ error: "Invalid JSON body" }), { status: 400, headers: contentHeaders });
     }
     const { task_type } = body;
-    if (!["drink_water", "walk", "game"].includes(task_type)) {
+    if (!["drink_water", "walk", "game", "laugh"].includes(task_type)) {
       return new Response(JSON.stringify({ error: "Invalid task" }), { status: 400, headers: contentHeaders });
     }
 
     const today = new Date().toISOString().split("T")[0];
 
-    // Check if already completed today
-    const { data: log, error: logError } = await supabase
-      .from("task_logs")
-      .select("*")
-      .eq("user_id", userId)
-      .eq("task_type", task_type)
-      .eq("completed_at", today)
-      .single();
+    // Check if already completed today (except for laugh task)
+    if (task_type !== "laugh") {
+      const { data: log, error: logError } = await supabase
+        .from("task_logs")
+        .select("*")
+        .eq("user_id", userId)
+        .eq("task_type", task_type)
+        .eq("completed_at", today)
+        .single();
 
-    if (log) {
-      return new Response(JSON.stringify({ message: "Task already completed today" }), { headers: contentHeaders });
-    }
-    if (logError && logError.code !== "PGRST116") {
-      return new Response(JSON.stringify({ error: logError }), { status: 500, headers: contentHeaders });
+      if (log) {
+        return new Response(JSON.stringify({ message: "Task already completed today", tokens: profile.tokens }), { headers: contentHeaders });
+      }
+      if (logError && logError.code !== "PGRST116") {
+        return new Response(JSON.stringify({ error: logError }), { status: 500, headers: contentHeaders });
+      }
     }
 
     // Get current tokens
@@ -223,6 +225,7 @@ const handler = async (req: Request): Promise<Response> => {
     if (task_type === "drink_water") reward = 5;
     else if (task_type === "walk") reward = 10;
     else if (task_type === "game") reward = 20;
+    else if (task_type === "laugh") reward = 1;
 
     const newTokens = profile.tokens + reward;
 

@@ -20,8 +20,12 @@ const Dashboard = ({ session, supabase }) => {
       const { data } = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/complete-task`, { task_type: type }, {
         headers: { Authorization: `Bearer ${session.access_token}` }
       });
-      setProfile({ ...profile, tokens: data.tokens });
-      alert('Task completed!');
+      setProfile({ ...profile, tokens: data.tokens }); // Update profile with new tokens
+      if (type === 'drink_water' && data.message === 'Task already completed today') {
+        alert('You have already drank water today!');
+      } else {
+        alert('Task completed!');
+      }
     } catch (err) {
       alert(err.response?.data.message || 'Error');
     }
@@ -51,6 +55,11 @@ const Dashboard = ({ session, supabase }) => {
           <h3 className="text-lg font-semibold text-secondary mb-2">Play Game</h3>
           <p className="text-gray-600 mb-4">Test your memory!</p>
           <Link to="/game" className="inline-block bg-primary text-white font-semibold py-2 px-4 rounded-lg hover:bg-teal-600 transition duration-300 shadow-md">Go to Game</Link>
+        </div>
+        <div className="card">
+          <h3 className="text-lg font-semibold text-secondary mb-2">Laugh Out Loud</h3>
+          <p className="text-gray-600 mb-4">Have a good laugh!</p>
+          <button onClick={() => completeTask('laugh')}>Log Completion</button>
         </div>
       </div>
       <div className="mt-6 flex space-x-4">
