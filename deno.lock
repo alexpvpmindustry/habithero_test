@@ -1,0 +1,16 @@
+{
+  "version": "5",
+  "specifiers": {
+    "npm:dotenv@^17.2.0": "17.2.0"
+  },
+  "npm": {
+    "dotenv@17.2.0": {
+      "integrity": "sha512-Q4sgBT60gzd0BB0lSyYD3xM4YxrXA9y4uBDof1JNYGzOXrQdQ6yX+7XIAqoFOGQFOTK1D3Hts5OllpxMDZFONQ=="
+    }
+  },
+  "workspace": {
+    "dependencies": [
+      "npm:dotenv@^17.2.0"
+    ]
+  }
+}

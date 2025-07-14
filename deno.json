@@ -1,0 +1,5 @@
+{
+  "imports": {
+    "dotenv": "npm:dotenv@^17.2.0"
+  }
+}

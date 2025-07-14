@@ -1,5 +1,5 @@
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { load } from "https://deno.land/std@0.224.0/dotenv/mod.ts";
+import { createClient } from "@supabase/supabase-js";
+import { load } from "https://deno.land/std@0.224.0/dotenv/load.ts";
 
 await load({ export: true });
 
