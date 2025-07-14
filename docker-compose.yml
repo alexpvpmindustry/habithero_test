@@ -1,0 +1,14 @@
+version: '3'
+services:
+  backend:
+    image: habithero-backend:latest
+    ports:
+      - "5001:5001"
+    env_file: .env
+    restart: always
+
+  frontend:
+    image: habithero-frontend:latest
+    ports:
+      - "80:80"
+    restart: always
