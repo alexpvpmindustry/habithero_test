@@ -70,4 +70,52 @@ FOR EACH ROW EXECUTE PROCEDURE public.handle_new_user();
 
 ```
 
+### Step 2: Build the Frontend
 
+1. **Set up the frontend project**:
+  ```bash
+  mkdir habithero-frontend
+  cd habithero-frontend
+  npm install
+  ```
+
+2. **Install dependencies**:
+  ```bash
+  npm install @supabase/supabase-js react-router-dom
+  ```
+
+3. **Run the frontend**:
+  ```bash
+  npm run dev
+  ```
+
+---
+
+### Step 3: Build the Backend
+
+1. **Set up the backend project**:
+  ```bash
+  mkdir habithero-backend
+  cd habithero-backend
+  npm install
+  ```
+
+2. **Run the backend**:
+  ```bash
+  node src/index.js
+  ```
+
+---
+
+### Step 4: Connect Frontend and Backend
+
+1. **Start both servers**:
+  ```bash
+  # Frontend
+  cd habithero-frontend
+  npm run dev
+
+  # Backend
+  cd ../habithero-backend
+  node src/index.js
+  ```
