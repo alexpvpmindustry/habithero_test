@@ -1,26 +1,23 @@
-// Import Deno standard library and Node.js-compatible modules
-import { createClient } from "npm:@supabase/supabase-js@^2.51.0";
-import { load } from "https://deno.land/std@0.224.0/dotenv/mod.ts"; // Use mod.ts for full dotenv support
-import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
+import { createClient } from "@supabase/supabase-js";
+import { config as loadEnv } from "dotenv";
 
 // Load environment variables
-await load({ export: true });
+loadEnv();
 
-const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
-const SUPABASE_SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_KEY")!;
+const SUPABASE_URL = process.env.SUPABASE_URL!;
+const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY!;
 
 if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
   throw new Error("Missing Supabase environment variables");
 }
 
-// Initialize Supabase client with Deno-compatible fetch
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY, {
   global: {
     fetch: (...args) => fetch(...args),
   },
 });
 
-const PORT = Number(Deno.env.get("PORT") || 5000);
+const PORT = Number(process.env.PORT || 5000);
 
 async function awardBadgesAndMilestones(
   supabase: any,
@@ -249,6 +246,9 @@ const handler = async (req: Request): Promise<Response> => {
   return new Response(JSON.stringify({ error: "Not Found" }), { status: 404, headers: contentHeaders });
 };
 
-// Start the server using Deno.serve
-serve(handler, { port: PORT });
+// Start the server using Bun's built-in server
+Bun.serve({
+  port: PORT,
+  fetch: handler,
+});
 console.log(`Server running on port ${PORT}`);

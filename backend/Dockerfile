@@ -1,15 +1,16 @@
-FROM denoland/deno:ubuntu-2.0.0
+# Use the official Bun image
+FROM oven/bun:1.1
 
 WORKDIR /app
 
+# Copy project files
 COPY . .
 
-# Cache dependencies
-RUN deno cache app.ts
+# Install dependencies from package.json
+RUN bun install
 
 # Expose port
-EXPOSE 5000
+EXPOSE 5001
 
-# Run with permissions
-CMD ["run", "--allow-net", "--allow-env", "--allow-read", "app.ts"]
-
+# Run the application
+CMD ["bun", "run", "app.ts"]
